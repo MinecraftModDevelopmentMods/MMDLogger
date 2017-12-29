@@ -1,12 +1,17 @@
 package com.mcmoddev.mmdlogger;
 
 import net.minecraftforge.oredict.OreDictionary;
+
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configurator;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
@@ -22,21 +27,26 @@ public class MMDLogger
     public static final String MODID = "mmdlogger";
     public static final String VERSION = "1.0";
     
-	public static final Logger logger = LogManager.getFormatterLogger(MMDLogger.MODID);
+	private Logger logger;
+	private LoggerContext loggerContext;
 	private boolean loggingOn = false;
 	
 	@EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
-		config.load();
+		Configuration modConfig = new Configuration(event.getSuggestedConfigurationFile());
+		modConfig.load();
 
 		final String OPTIONS = "options";
 
-		loggingOn = config.getBoolean("OREDICT_LOGGING", OPTIONS, loggingOn,
+		loggingOn = modConfig.getBoolean("OREDICT_LOGGING", OPTIONS, loggingOn,
 				"If true, then ore dict names and corresponding id's are logged");
 		
-		config.save();
+		modConfig.save();
+		
+		if (loggingOn) {
+			logger = LogManager.getFormatterLogger(MMDLogger.MODID);
+		}
     }
 	
     @EventHandler
@@ -48,13 +58,16 @@ public class MMDLogger
     		
     		for (String oreName : OreDictionary.getOreNames()) {    			
     			oreID = OreDictionary.getOreID(oreName); 
-    			
     			items = OreDictionary.getOres(oreName);
     			
     			for (ItemStack itemStack : items) {
-    				logger.info("Ore Dictionary Entry: Ore Name: %s, Ore ID: %s, Unlocalised Name: %s", oreName, oreID, itemStack.getItem().getUnlocalizedName());	
+    				Item item = itemStack.getItem();
+    				
+    				logger.info("Ore Dictionary Entry: Ore Name: %s, Ore ID: %s, Unlocalised Name: %s, Block ID: %s, Registry Name: %s", oreName, oreID, item.getUnlocalizedName(), Item.getIdFromItem(item), item.getRegistryName());	
 				}
-    		} 	
+    		}
+    		
+    		Configurator.shutdown(loggerContext);
     	}
     }
     
