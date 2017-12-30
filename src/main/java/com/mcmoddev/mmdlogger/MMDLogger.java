@@ -1,13 +1,16 @@
 package com.mcmoddev.mmdlogger;
 
 import net.minecraftforge.oredict.OreDictionary;
-
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -23,12 +26,17 @@ public class MMDLogger {
     public static final String MODID = "mmdlogger";
     public static final String VERSION = "1.0";
     
+	protected static final Map<String, String> ItemToOreDictMap = new HashMap<>();
+    
 	private Logger logger;
 	private boolean loggingOn = false;
+	protected static boolean tooltipsOn = false;
 	
 	@EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
+		MinecraftForge.EVENT_BUS.register(new MMDLoggerEventBusSubscriber());
+		
 		Configuration modConfig = new Configuration(event.getSuggestedConfigurationFile());
 		modConfig.load();
 
@@ -36,6 +44,9 @@ public class MMDLogger {
 
 		loggingOn = modConfig.getBoolean("OREDICT_LOGGING", OPTIONS, loggingOn,
 				"If true, then ore dict names and corresponding id's are logged");
+		
+		tooltipsOn = modConfig.getBoolean("OREDICT_TOOLTIPS", OPTIONS, tooltipsOn,
+				"If true, then ore dict names are displayed in tooltips");
 		
 		modConfig.save();
 		
@@ -47,20 +58,21 @@ public class MMDLogger {
     @EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-    	if (loggingOn) {	
-    		List<ItemStack> items;
-    		int oreID;
-    		
+    	if (loggingOn) {
     		for (String oreName : OreDictionary.getOreNames()) {    			
-    			oreID = OreDictionary.getOreID(oreName); 
-    			items = OreDictionary.getOres(oreName);
+    			int oreID = OreDictionary.getOreID(oreName); 
+    			List<ItemStack> items = OreDictionary.getOres(oreName);
     			
     			for (ItemStack itemStack : items) {
     				Item item = itemStack.getItem();
     				
-    				logger.info("Ore Dictionary Entry: Ore Name: %s, Ore ID: %s, Unlocalised Name: %s, Block ID: %s, Registry Name: %s", oreName, oreID, item.getUnlocalizedName(), Item.getIdFromItem(item), item.getRegistryName());	
+    				int meta = item.getMetadata(itemStack);
+    				
+    				ItemToOreDictMap.put(Item.getIdFromItem(item) + ":" + meta, oreName);
+    				
+    				logger.info("Ore Dictionary Entry: Ore Name: %s, Ore ID: %s, Unlocalised Name: %s, Block ID: %s, Block Meta: %s, Registry Name: %s", oreName, oreID, item.getUnlocalizedName(), Item.getIdFromItem(item), meta, item.getRegistryName());	
 				}
     		}
     	}
-    }
+    }    
 }
