@@ -58,7 +58,7 @@ public class MMDLogger {
     @EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-    	if (loggingOn) {
+    	if (loggingOn || tooltipsOn) {
     		for (String oreName : OreDictionary.getOreNames()) {    			
     			int oreID = OreDictionary.getOreID(oreName); 
     			List<ItemStack> items = OreDictionary.getOres(oreName);
@@ -70,7 +70,8 @@ public class MMDLogger {
     				
     				ItemToOreDictMap.put(Item.getIdFromItem(item) + ":" + meta, oreName);
     				
-    				logger.info("Ore Dictionary Entry: Ore Name: %s, Ore ID: %s, Unlocalised Name: %s, Block ID: %s, Block Meta: %s, Registry Name: %s", oreName, oreID, item.getUnlocalizedName(), Item.getIdFromItem(item), meta, item.getRegistryName());	
+    				if (loggingOn)
+    					logger.info("Ore Dictionary Entry: Ore Name: %s, Ore ID: %s, Unlocalised Name: %s, Block ID: %s, Block Meta: %s, Registry Name: %s", oreName, oreID, item.getUnlocalizedName(), Item.getIdFromItem(item), meta, item.getRegistryName());	
 				}
     		}
     	}
