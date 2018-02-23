@@ -22,11 +22,11 @@ public class MMDLoggerEventBusSubscriber {
 			if (item == null)
 				return;
 			
-	    	int blockId = Item.getIdFromItem(item);
+	    	String blockName = item.getRegistryName().getResourceDomain() + ":" + item.getRegistryName().getResourcePath();
 	    	int meta = item.getMetadata(stack);
 	    	
 	    	
-	    	String oreName = MMDLogger.ItemToOreDictMap.get(blockId + ":" + meta);
+	    	String oreName = MMDLogger.ItemToOreDictMap.get(blockName + ":" + meta);
 	    	
 	    	List<String> tooltips = event.getToolTip();
 		    
