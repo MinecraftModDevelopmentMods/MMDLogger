@@ -9,7 +9,7 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Mod.EventBusSubscriber(modid = MMDLogger.MODID)
+@Mod.EventBusSubscriber()
 public class MMDLoggerEventBusSubscriber {
 
 	@SubscribeEvent
