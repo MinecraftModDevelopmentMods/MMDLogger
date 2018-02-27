@@ -1,21 +1,18 @@
 package com.mcmoddev.mmdlogger;
 
-import net.minecraftforge.oredict.OreDictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * @author SkyBlade1978
@@ -29,28 +26,32 @@ public class MMDLogger {
 	protected static final Map<String, String> ItemToOreDictMap = new HashMap<>();
     
 	private Logger logger;
-	private boolean loggingOn = false;
-	protected static boolean tooltipsOn = false;
+//	private boolean loggingOn = true;
+//	protected static boolean oreDictTooltipsOn = true;
+//	protected static boolean nbtTooltipsOn = true;
 	
 	@EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
 		MinecraftForge.EVENT_BUS.register(new MMDLoggerEventBusSubscriber());
 		
-		Configuration modConfig = new Configuration(event.getSuggestedConfigurationFile());
-		modConfig.load();
+//		Configuration modConfig = new Configuration(event.getSuggestedConfigurationFile());
+//		modConfig.load();
 
-		final String OPTIONS = "options";
+//		final String OPTIONS = "options";
 
-		loggingOn = modConfig.getBoolean("OREDICT_LOGGING", OPTIONS, loggingOn,
-				"If true, then ore dict names and corresponding id's are logged");
+//		loggingOn = modConfig.getBoolean("OREDICT_LOGGING", OPTIONS, loggingOn,
+//				"If true, then ore dict names and corresponding id's are logged.");
+//
+//		oreDictTooltipsOn = modConfig.getBoolean("OREDICT_TOOLTIPS", OPTIONS, oreDictTooltipsOn,
+//				"If true, then ore dict names are displayed in tooltips.");
+//
+//		nbtTooltipsOn = modConfig.getBoolean("NBT_TOOLTIPS", OPTIONS, nbtTooltipsOn,
+//			"If true, then item stack's nbt is displayed in tooltips.");
+//
+//		modConfig.save();
 		
-		tooltipsOn = modConfig.getBoolean("OREDICT_TOOLTIPS", OPTIONS, tooltipsOn,
-				"If true, then ore dict names are displayed in tooltips");
-		
-		modConfig.save();
-		
-		if (loggingOn) {
+		if (MMDLoggerConfig.options.loggingOn) {
 			logger = LogManager.getFormatterLogger(MMDLogger.MODID);
 		}
     }
@@ -58,7 +59,7 @@ public class MMDLogger {
     @EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-    	if (loggingOn || tooltipsOn) {
+    	if (MMDLoggerConfig.options.loggingOn || MMDLoggerConfig.options.oreDictTooltipsOn) {
     		for (String oreName : OreDictionary.getOreNames()) {    			
     			int oreID = OreDictionary.getOreID(oreName); 
     			List<ItemStack> items = OreDictionary.getOres(oreName);
@@ -70,7 +71,7 @@ public class MMDLogger {
     				
     				ItemToOreDictMap.put(item.getRegistryName().getResourceDomain() + ":" + item.getRegistryName().getResourcePath() + ":" + meta, oreName);
     				
-    				if (loggingOn)
+    				if (MMDLoggerConfig.options.loggingOn)
     					logger.info("Ore Dictionary Entry: Ore Name: %s, Ore ID: %s, Unlocalised Name: %s, Block ID: %s, Block Meta: %s, Registry Name: %s", oreName, oreID, item.getUnlocalizedName(), Item.getIdFromItem(item), meta, item.getRegistryName());	
 				}
     		}
