@@ -19,6 +19,9 @@ public class MMDLoggerConfig {
 
         @Config.Comment("If true, then item stack's nbt is displayed in tooltips.")
         public boolean nbtTooltipsOn = false;
+
+        @Config.Comment("If true, then item block stack's block info is displayed in tooltips.")
+        public boolean blockTooltipsOn = false;
     }
 
     @Mod.EventBusSubscriber(modid = MMDLogger.MODID)
