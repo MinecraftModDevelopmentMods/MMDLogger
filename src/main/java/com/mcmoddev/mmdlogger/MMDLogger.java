@@ -30,7 +30,9 @@ public class MMDLogger {
     
 	private Logger logger;
 	private boolean loggingOn = false;
-	protected static boolean tooltipsOn = false;
+	protected static boolean oreDictTooltipsOn = false;
+	protected static boolean nbtTooltipsOn = false;
+	protected static boolean blockTooltipsOn = false;
 	
 	@EventHandler
     public void preInit(FMLPreInitializationEvent event)
@@ -41,12 +43,18 @@ public class MMDLogger {
 		modConfig.load();
 
 		final String OPTIONS = "options";
-
+		
 		loggingOn = modConfig.getBoolean("OREDICT_LOGGING", OPTIONS, loggingOn,
 				"If true, then ore dict names and corresponding id's are logged");
 		
-		tooltipsOn = modConfig.getBoolean("OREDICT_TOOLTIPS", OPTIONS, tooltipsOn,
+		oreDictTooltipsOn = modConfig.getBoolean("OREDICT_TOOLTIPS", OPTIONS, oreDictTooltipsOn,
 				"If true, then ore dict names are displayed in tooltips");
+		
+		nbtTooltipsOn = modConfig.getBoolean("NBT_TOOLTIPS", OPTIONS, nbtTooltipsOn,
+				"If true, then item stack's nbt is displayed in tooltips");
+		
+		blockTooltipsOn = modConfig.getBoolean("BLOCK_TOOLTIPS", OPTIONS, blockTooltipsOn,
+				"If true, then item block stack's block info is displayed in tooltips");
 		
 		modConfig.save();
 		
@@ -58,7 +66,7 @@ public class MMDLogger {
     @EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-    	if (loggingOn || tooltipsOn) {
+    	if (loggingOn || oreDictTooltipsOn) {
     		for (String oreName : OreDictionary.getOreNames()) {    			
     			int oreID = OreDictionary.getOreID(oreName); 
     			List<ItemStack> items = OreDictionary.getOres(oreName);
