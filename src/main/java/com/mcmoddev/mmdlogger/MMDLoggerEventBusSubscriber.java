@@ -35,7 +35,7 @@ public class MMDLoggerEventBusSubscriber {
             if (item == null)
                 return;
 
-            String blockName = item.getRegistryName().getResourceDomain() + ":" + item.getRegistryName().getResourcePath();
+            String blockName = item.getRegistryName().getNamespace() + ":" + item.getRegistryName().getPath();
             int meta = item.getMetadata(stack);
 
             String oreName = MMDLogger.ItemToOreDictMap.get(blockName + ":" + meta);
@@ -47,7 +47,7 @@ public class MMDLoggerEventBusSubscriber {
 
         if (MMDLoggerConfig.options.nbtTooltipsOn) {
 			NBTTagCompound stackNbt = event.getItemStack().getTagCompound();
-	    	if ((stackNbt != null) && !stackNbt.hasNoTags()) {
+	    	if ((stackNbt != null) && !stackNbt.isEmpty()) {
 	    		tooltips.add(TextFormatting.GRAY + "NBT: " + stackNbt.toString());
 			}
 		}

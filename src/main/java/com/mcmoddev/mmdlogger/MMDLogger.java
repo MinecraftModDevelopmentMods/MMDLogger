@@ -69,10 +69,10 @@ public class MMDLogger {
     				
     				int meta = item.getMetadata(itemStack);
     				
-    				ItemToOreDictMap.put(item.getRegistryName().getResourceDomain() + ":" + item.getRegistryName().getResourcePath() + ":" + meta, oreName);
+    				ItemToOreDictMap.put(item.getRegistryName().getNamespace() + ":" + item.getRegistryName().getPath() + ":" + meta, oreName);
     				
     				if (MMDLoggerConfig.options.loggingOn)
-    					logger.info("Ore Dictionary Entry: Ore Name: %s, Ore ID: %s, Unlocalised Name: %s, Block ID: %s, Block Meta: %s, Registry Name: %s", oreName, oreID, item.getUnlocalizedName(), Item.getIdFromItem(item), meta, item.getRegistryName());	
+    					logger.info("Ore Dictionary Entry: Ore Name: %s, Ore ID: %s, Unlocalised Name: %s, Block ID: %s, Block Meta: %s, Registry Name: %s", oreName, oreID, item.getTranslationKey(), Item.getIdFromItem(item), meta, item.getRegistryName());	
 				}
     		}
     	}
