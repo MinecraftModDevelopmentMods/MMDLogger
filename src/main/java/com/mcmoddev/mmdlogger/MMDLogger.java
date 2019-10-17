@@ -8,8 +8,10 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
@@ -67,7 +69,20 @@ public class MMDLogger {
     public void postInit(FMLPostInitializationEvent event)
     {
     	if (loggingOn || oreDictTooltipsOn) {
-    		for (String oreName : OreDictionary.getOreNames()) {    			
+    		for (String oreName : OreDictionary.getOreNames()) {   
+    			
+        		if (loggingOn) {
+    	    		for (ResourceLocation entry : Block.REGISTRY.getKeys()) {
+    	    			Block block = Block.REGISTRY.getObject(entry);
+    	    			logger.info("Block Registry Entry: " + "ID: " + Block.REGISTRY.getIDForObject(block) + " Name: " + entry.toString() );
+    	    		}
+    	    		
+    	    		for (ResourceLocation entry : Item.REGISTRY.getKeys()) {
+    	    			Item item = Item.REGISTRY.getObject(entry);
+    	    			logger.info("Item Registry Entry: " + "ID: " + Item.REGISTRY.getIDForObject(item) + "  Name: " + entry.toString() );
+    	    		}
+        		}    		
+        		
     			int oreID = OreDictionary.getOreID(oreName); 
     			List<ItemStack> items = OreDictionary.getOres(oreName);
     			
